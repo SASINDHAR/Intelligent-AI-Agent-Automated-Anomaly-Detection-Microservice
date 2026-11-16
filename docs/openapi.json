@@ -1,0 +1,322 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HOPn Intelligent Anomaly Service",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/telemetry": {
+      "post": {
+        "summary": "Ingest",
+        "operationId": "ingest_v1_telemetry_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Telemetry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Detection": {
+        "properties": {
+          "is_anomaly": {
+            "type": "boolean",
+            "title": "Is Anomaly"
+          },
+          "decision_margin": {
+            "type": "number",
+            "title": "Decision Margin"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "default": "iforest-synthetic-v1-seed42"
+          },
+          "deviations_sigma": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Deviations Sigma"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "is_anomaly",
+          "decision_margin",
+          "deviations_sigma"
+        ],
+        "title": "Detection"
+      },
+      "DiagnosticResult": {
+        "properties": {
+          "summary": {
+            "type": "string",
+            "maxLength": 600,
+            "minLength": 1,
+            "title": "Summary"
+          },
+          "probable_causes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 4,
+            "minItems": 1,
+            "title": "Probable Causes"
+          },
+          "recommended_action": {
+            "type": "string",
+            "enum": [
+              "inspect_cooling",
+              "inspect_bearings",
+              "inspect_load",
+              "review_sensor"
+            ],
+            "title": "Recommended Action"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "llm",
+              "offline",
+              "fallback"
+            ],
+            "title": "Source"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "requires_human_review": {
+            "type": "boolean",
+            "const": true,
+            "title": "Requires Human Review",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "summary",
+          "probable_causes",
+          "recommended_action",
+          "source"
+        ],
+        "title": "DiagnosticResult"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Result": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "telemetry": {
+            "$ref": "#/components/schemas/Telemetry"
+          },
+          "detection": {
+            "$ref": "#/components/schemas/Detection"
+          },
+          "diagnosis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosticResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workflow_status": {
+            "type": "string",
+            "enum": [
+              "not_needed",
+              "disabled",
+              "delivered",
+              "failed"
+            ],
+            "title": "Workflow Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "telemetry",
+          "detection",
+          "diagnosis",
+          "workflow_status"
+        ],
+        "title": "Result"
+      },
+      "Telemetry": {
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.-]+$",
+            "title": "Asset Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "temperature_c": {
+            "type": "number",
+            "maximum": 250.0,
+            "minimum": -50.0,
+            "title": "Temperature C"
+          },
+          "vibration_mm_s": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Vibration Mm S"
+          },
+          "current_a": {
+            "type": "number",
+            "maximum": 500.0,
+            "minimum": 0.0,
+            "title": "Current A"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "asset_id",
+          "timestamp",
+          "temperature_c",
+          "vibration_mm_s",
+          "current_a"
+        ],
+        "title": "Telemetry"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "transport": "real localhost HTTP: uvicorn -> receiver",
+  "responses": {
+    "normal": {
+      "event_id": "218304f9-0177-4311-8832-80534ee9e544",
+      "telemetry": {
+        "asset_id": "motor-01",
+        "timestamp": "2026-11-16T10:00:00Z",
+        "temperature_c": 65.0,
+        "vibration_mm_s": 2.0,
+        "current_a": 10.0
+      },
+      "detection": {
+        "is_anomaly": false,
+        "decision_margin": 0.2161784572437958,
+        "model_version": "iforest-synthetic-v1-seed42",
+        "deviations_sigma": {
+          "temperature_c": 0.0,
+          "vibration_mm_s": 0.0,
+          "current_a": 0.0
+        }
+      },
+      "diagnosis": null,
+      "workflow_status": "not_needed"
+    },
+    "anomaly": {
+      "event_id": "962849f4-23ab-4aca-a6a5-2cd99b6fef0f",
+      "telemetry": {
+        "asset_id": "motor-01",
+        "timestamp": "2026-11-16T10:00:01Z",
+        "temperature_c": 110.0,
+        "vibration_mm_s": 12.0,
+        "current_a": 22.0
+      },
+      "detection": {
+        "is_anomaly": true,
+        "decision_margin": -0.1645083053701576,
+        "model_version": "iforest-synthetic-v1-seed42",
+        "deviations_sigma": {
+          "temperature_c": 9.0,
+          "vibration_mm_s": 28.571428571428573,
+          "current_a": 12.0
+        }
+      },
+      "diagnosis": {
+        "summary": "Anomalous steady-state observation: vibration_mm_s is +28.6 baseline standard deviations. Inspection required; cause is unconfirmed.",
+        "probable_causes": [
+          "Possible bearing wear or mechanical imbalance"
+        ],
+        "recommended_action": "inspect_bearings",
+        "source": "offline",
+        "fallback_reason": null,
+        "requires_human_review": true
+      },
+      "workflow_status": "delivered"
+    }
+  },
+  "received_events": [
+    {
+      "event_type": "anomaly.detected",
+      "event": {
+        "event_id": "962849f4-23ab-4aca-a6a5-2cd99b6fef0f",
+        "telemetry": {
+          "asset_id": "motor-01",
+          "timestamp": "2026-11-16T10:00:01Z",
+          "temperature_c": 110.0,
+          "vibration_mm_s": 12.0,
+          "current_a": 22.0
+        },
+        "detection": {
+          "is_anomaly": true,
+          "decision_margin": -0.1645083053701576,
+          "model_version": "iforest-synthetic-v1-seed42",
+          "deviations_sigma": {
+            "temperature_c": 9.0,
+            "vibration_mm_s": 28.571428571428573,
+            "current_a": 12.0
+          }
+        },
+        "diagnosis": {
+          "summary": "Anomalous steady-state observation: vibration_mm_s is +28.6 baseline standard deviations. Inspection required; cause is unconfirmed.",
+          "probable_causes": [
+            "Possible bearing wear or mechanical imbalance"
+          ],
+          "recommended_action": "inspect_bearings",
+          "source": "offline",
+          "fallback_reason": null,
+          "requires_human_review": true
+        }
+      }
+    }
+  ]
+}

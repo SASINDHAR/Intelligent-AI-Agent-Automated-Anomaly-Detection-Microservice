@@ -1,0 +1,13 @@
+Dear Prof. Dr. Ahmed Ebada,
+
+Please find attached my submission for the Intelligent AI Agent & Automated Anomaly Detection Microservice evaluation.
+
+The archive contains a FastAPI service, a reproducible Isolation Forest baseline, a configurable LLM diagnostics adapter, an anomaly webhook integration, Docker configuration, automated tests, API documentation, and a two-page technical summary with my proposed six-month contribution plan.
+
+The service supports an offline demonstration without API credentials. The README explains how to enable a live LLM and an n8n or REST webhook. Validation evidence distinguishes locally verified behavior from deployment and provider checks that still require the corresponding environment.
+
+Thank you for the opportunity. I look forward to discussing the implementation and potential contributions to HOPn.
+
+Best regards,
+Duggireddy Sasindhar Reddy
+sasindhar9542@gmail.com
