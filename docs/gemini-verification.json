@@ -16,6 +16,10 @@
     "fallback_reason": null,
     "requires_human_review": true
   },
-  "code_commit": "3453cf3",
+  "latency_seconds": 2.46,
+  "fallback_reason": null,
+  "code_commit": "75f87d2",
+  "provider_timeout_seconds": 40,
+  "vercel_function_max_duration_seconds": 60,
   "github_actions": "passed: 35 tests, Docker build and container health check"
 }

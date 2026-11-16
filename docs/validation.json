@@ -1,7 +1,7 @@
 {
   "python": "3.12.14",
   "platform": "Windows-11-10.0.26300-SP0",
-  "pytest_summary": "35 passed, 1 warning in 12.32s after Gemini structured-output compatibility fix",
+  "pytest_summary": "35 passed, 1 warning in 17.31s after Gemini structured-output compatibility and timeout fixes",
   "synthetic_evaluation": {
     "seed": 93,
     "healthy_count": 500,
@@ -15,9 +15,9 @@
     "p95": 27.30126500682671,
     "scope": "in-process TestClient, offline anomaly requests; not network throughput"
   },
-  "external_llm": "Gemini live request verified on Vercel using boundary values -50 C, 100 mm/s and 500 A; source=llm and fallback_reason=null. See gemini-verification.json. Schema rejection retry and invalid-response paths are covered by mocked tests.",
+  "external_llm": "Gemini live request verified on Vercel using boundary values -50 C, 100 mm/s and 500 A; source=llm and fallback_reason=null in 2.46s. See gemini-verification.json. Schema rejection retry and invalid-response paths are covered by mocked tests. Provider timeout 40s; Vercel function maximum 60s.",
   "webhook": "mocked success/failure; local HTTP integration recorded separately",
-  "docker": "GitHub Actions passed tests, Docker build and container health check for final commit 3453cf3: https://github.com/SASINDHAR/Intelligent-AI-Agent-Automated-Anomaly-Detection-Microservice/actions/runs/43962537702",
+  "docker": "GitHub Actions passed tests, Docker build and container health check for final code commit 75f87d2: https://github.com/SASINDHAR/Intelligent-AI-Agent-Automated-Anomaly-Detection-Microservice/actions/runs/43963262570",
   "cloud_run": "not deployed: project billing disabled",
   "vercel": "https://hopn-anomaly.vercel.app/docs; public deployment verified"
 }
