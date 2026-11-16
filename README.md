@@ -84,14 +84,15 @@ environment variables in your shell (PowerShell: `$env:LLM_MODE = "live"`).
 
 To use Gemini, set `LLM_MODE=live`, your `LLM_API_KEY` and an available `LLM_MODEL`.
 The configured default base is `https://generativelanguage.googleapis.com/v1beta/openai/`.
-Other providers must implement Chat Completions and JSON object output. The
+Other providers must implement Chat Completions and JSON Schema response output. The
 provider response is validated locally; unsupported response modes or unavailable
 models produce a labelled fallback. Vertex IAM/OAuth is not implemented by this
 API-key adapter. Never commit `.env`.
 
 The agent is a bounded single-step diagnostic workflow: observe -> score -> build
-evidence -> request structured diagnosis -> validate -> notify. It uses JSON mode,
-an action allowlist and Pydantic validation. It does not claim autonomous planning
+evidence -> request schema-constrained diagnosis -> validate -> notify. Gemini
+receives a strict JSON Schema plus a prompt that forbids extra properties; Pydantic
+revalidates every response and the action allowlist. It does not claim autonomous planning
 or arbitrary function calling. The application owns the notification tool and its
 fixed configured destination; the LLM cannot choose a URL or execute commands.
 

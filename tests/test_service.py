@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import Detector, MEAN, STD, Settings, Telemetry, create_app
+from app.main import DIAGNOSIS_JSON_SCHEMA, Detector, MEAN, STD, Settings, Telemetry, create_app
 
 NORMAL = dict(asset_id="motor-01", timestamp="2026-11-16T10:00:00Z", temperature_c=65, vibration_mm_s=2, current_a=10)
 ABNORMAL = {**NORMAL, "temperature_c": 110, "vibration_mm_s": 12, "current_a": 22}
@@ -90,7 +90,8 @@ def test_live_llm_and_webhook(settings):
         body = json.loads(request.content)
         if request.url.host == "provider.test":
             assert request.headers["Authorization"] == "Bearer test-key"
-            assert body["response_format"] == {"type": "json_object"}
+            assert body["response_format"]["type"] == "json_schema"
+            assert body["response_format"]["json_schema"]["schema"] == DIAGNOSIS_JSON_SCHEMA
             assert "deviations_sigma" in body["messages"][1]["content"]
             return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps({"summary": "Elevated vibration may indicate bearing wear; inspect.", "probable_causes": ["Possible bearing wear"], "recommended_action": "inspect_bearings"})}}]})
         assert request.headers["Authorization"] == "Bearer workflow-secret"
@@ -103,6 +104,25 @@ def test_live_llm_and_webhook(settings):
     assert data["diagnosis"]["source"] == "llm"
     assert data["workflow_status"] == "delivered"
     assert len(calls) == 2
+
+
+def test_boundary_telemetry_gets_structured_live_diagnosis(settings):
+    settings.llm_mode, settings.llm_key, settings.llm_model = "live", "test-key", "gemini-3.5-flash-lite"
+    boundary = {**NORMAL, "temperature_c": -50, "vibration_mm_s": 100, "current_a": 500}
+    answer = {"summary": "Extreme sensor readings need human inspection.",
+              "probable_causes": ["Sensor fault", "Mechanical or electrical fault"],
+              "recommended_action": "review_sensor"}
+
+    def handler(request):
+        assert json.loads(request.content)["response_format"]["type"] == "json_schema"
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(answer)}}]})
+
+    with TestClient(create_app(settings, httpx.MockTransport(handler))) as client:
+        result = client.post("/v1/telemetry", json=boundary).json()
+    assert result["detection"]["is_anomaly"] is True
+    assert result["diagnosis"]["source"] == "llm"
+    assert result["diagnosis"]["fallback_reason"] is None
+    assert result["diagnosis"]["recommended_action"] == "review_sensor"
 
 
 @pytest.mark.parametrize("failure", ["timeout", "rate_limit", "server", "bad_json", "missing", "unsafe_action"])
