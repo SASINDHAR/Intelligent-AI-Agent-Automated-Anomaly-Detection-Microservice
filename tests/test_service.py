@@ -163,3 +163,6 @@ def test_openapi(client):
     schema = client.get("/openapi.json").json()
     assert "Telemetry" in schema["components"]["schemas"]
     assert "/v1/telemetry" in schema["paths"]
+    root = client.get("/")
+    assert root.status_code == 200
+    assert root.json()["docs"] == "/docs"

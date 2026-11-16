@@ -172,6 +172,16 @@ def create_app(settings=None, transport=None):
             {"loc": list(error["loc"]), "msg": error["msg"], "type": error["type"]}
             for error in exc.errors()]})
 
+    @app.get("/")
+    async def index():
+        return {
+            "service": "HOPn Intelligent Anomaly Service",
+            "status": "ok",
+            "docs": "/docs",
+            "health": "/healthz",
+            "telemetry_endpoint": "POST /v1/telemetry",
+        }
+
     @app.get("/healthz")
     async def health():
         return {"status": "ok", "model_loaded": True, "llm_mode": settings.llm_mode}

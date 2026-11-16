@@ -6,6 +6,7 @@ an OpenAI-compatible LLM adapter (including Gemini), and an anomaly webhook.
 
 ## Live demo
 
+- [Service home](https://hopn-anomaly.vercel.app/)
 - [Interactive API documentation](https://hopn-anomaly.vercel.app/docs)
 - [Health endpoint](https://hopn-anomaly.vercel.app/healthz)
 - [GitHub repository](https://github.com/SASINDHAR/Intelligent-AI-Agent-Automated-Anomaly-Detection-Microservice)
