@@ -125,6 +125,28 @@ def test_boundary_telemetry_gets_structured_live_diagnosis(settings):
     assert result["diagnosis"]["recommended_action"] == "review_sensor"
 
 
+def test_provider_json_schema_compatibility_retry(settings):
+    settings.llm_mode, settings.llm_key, settings.llm_model = "live", "test-key", "test-model"
+    requests = []
+    answer = {"summary": "Inspect sensor and motor.", "probable_causes": ["Sensor or load fault"],
+              "recommended_action": "review_sensor"}
+
+    def handler(request):
+        body = json.loads(request.content)
+        requests.append(body["response_format"]["type"])
+        if len(requests) == 1:
+            return httpx.Response(400, json={"error": {"message": "JSON schema mode unavailable"}})
+        assert body["response_format"] == {"type": "json_object"}
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(answer)}}]})
+
+    with TestClient(create_app(settings, httpx.MockTransport(handler))) as client:
+        result = client.post("/v1/telemetry", json={**NORMAL, "temperature_c": -50,
+                                                     "vibration_mm_s": 100, "current_a": 500}).json()
+    assert requests == ["json_schema", "json_object"]
+    assert result["diagnosis"]["source"] == "llm"
+    assert result["diagnosis"]["fallback_reason"] is None
+
+
 @pytest.mark.parametrize("failure", ["timeout", "rate_limit", "server", "bad_json", "missing", "unsafe_action"])
 def test_llm_fallback(settings, failure):
     settings.llm_mode, settings.llm_key, settings.llm_model = "live", "test", "test"

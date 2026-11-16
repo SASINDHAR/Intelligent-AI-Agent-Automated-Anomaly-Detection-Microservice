@@ -145,9 +145,19 @@ async def diagnose(client, settings, sample, detection):
         async with asyncio.timeout(10):
             response = await client.post(settings.llm_url.rstrip("/") + "/chat/completions",
                                          headers={"Authorization": f"Bearer {settings.llm_key}"}, json=payload)
+            # Some OpenAI-compatible gateways reject json_schema despite supporting
+            # json_object. Retry only that format negotiation; local validation remains strict.
+            if response.status_code in (400, 422):
+                compatibility_payload = {**payload, "response_format": {"type": "json_object"}}
+                response = await client.post(settings.llm_url.rstrip("/") + "/chat/completions",
+                                             headers={"Authorization": f"Bearer {settings.llm_key}"},
+                                             json=compatibility_payload)
             response.raise_for_status()
             parsed = Diagnosis.model_validate_json(response.json()["choices"][0]["message"]["content"])
             return DiagnosticResult(**parsed.model_dump(), source="llm")
+    except httpx.HTTPStatusError as exc:
+        log.warning("diagnosis_fallback kind=HTTPStatusError status=%d", exc.response.status_code)
+        return fallback(detection, "fallback", f"HTTP_{exc.response.status_code}")
     except (httpx.HTTPError, TimeoutError, ValueError, KeyError, IndexError, TypeError) as exc:
         # Do not log provider bodies, API keys or private telemetry.
         log.warning("diagnosis_fallback kind=%s", type(exc).__name__)

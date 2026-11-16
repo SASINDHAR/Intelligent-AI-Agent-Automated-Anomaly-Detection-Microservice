@@ -92,7 +92,9 @@ API-key adapter. Never commit `.env`.
 The agent is a bounded single-step diagnostic workflow: observe -> score -> build
 evidence -> request schema-constrained diagnosis -> validate -> notify. Gemini
 receives a strict JSON Schema plus a prompt that forbids extra properties; Pydantic
-revalidates every response and the action allowlist. It does not claim autonomous planning
+revalidates every response and the action allowlist. If an OpenAI-compatible provider
+rejects schema mode, the client retries once in JSON-object mode and still validates
+the returned structure locally. It does not claim autonomous planning
 or arbitrary function calling. The application owns the notification tool and its
 fixed configured destination; the LLM cannot choose a URL or execute commands.
 
