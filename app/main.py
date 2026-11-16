@@ -142,7 +142,7 @@ async def diagnose(client, settings, sample, detection):
             "name": "industrial_diagnosis", "strict": True, "schema": DIAGNOSIS_JSON_SCHEMA}},
         "max_tokens": 600}
     try:
-        async with asyncio.timeout(10):
+        async with asyncio.timeout(40):
             response = await client.post(settings.llm_url.rstrip("/") + "/chat/completions",
                                          headers={"Authorization": f"Bearer {settings.llm_key}"}, json=payload)
             # Some OpenAI-compatible gateways reject json_schema despite supporting
@@ -186,7 +186,7 @@ def create_app(settings=None, transport=None):
     @asynccontextmanager
     async def lifespan(app):
         app.state.detector = await run_in_threadpool(Detector)
-        async with httpx.AsyncClient(timeout=httpx.Timeout(10, connect=3), transport=transport, follow_redirects=False) as client:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(40, connect=3), transport=transport, follow_redirects=False) as client:
             app.state.client = client
             yield
 

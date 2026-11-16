@@ -85,8 +85,10 @@ environment variables in your shell (PowerShell: `$env:LLM_MODE = "live"`).
 To use Gemini, set `LLM_MODE=live`, your `LLM_API_KEY` and an available `LLM_MODEL`.
 The configured default base is `https://generativelanguage.googleapis.com/v1beta/openai/`.
 Other providers must implement Chat Completions and JSON Schema response output. The
-provider response is validated locally; unsupported response modes or unavailable
-models produce a labelled fallback. Vertex IAM/OAuth is not implemented by this
+provider response is validated locally; unsupported response modes get one
+JSON-object retry and unavailable models produce a labelled fallback. LLM requests
+have a 40-second client budget; the Vercel function is capped at 60 seconds.
+Vertex IAM/OAuth is not implemented by this
 API-key adapter. Never commit `.env`.
 
 The agent is a bounded single-step diagnostic workflow: observe -> score -> build
