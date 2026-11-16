@@ -15,8 +15,9 @@
     "p95": 27.30126500682671,
     "scope": "in-process TestClient, offline anomaly requests; not network throughput"
   },
-  "external_llm": "mocked, no credentialed live call",
+  "external_llm": "Gemini live request verified on Vercel; source=llm and fallback_reason=null. See gemini-verification.json. Error paths tested with mocks.",
   "webhook": "mocked success/failure; local HTTP integration recorded separately",
-  "docker": "not executed: Docker unavailable",
-  "cloud_run": "not deployed"
+  "docker": "GitHub Actions passed Docker build and container health check: https://github.com/SASINDHAR/Intelligent-AI-Agent-Automated-Anomaly-Detection-Microservice/actions/runs/43943608972",
+  "cloud_run": "not deployed: project billing disabled",
+  "vercel": "https://hopn-anomaly.vercel.app/docs; public deployment verified"
 }

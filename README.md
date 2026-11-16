@@ -10,13 +10,15 @@ an OpenAI-compatible LLM adapter (including Gemini), and an anomaly webhook.
 - [Health endpoint](https://hopn-anomaly.vercel.app/healthz)
 - [GitHub repository](https://github.com/SASINDHAR/Intelligent-AI-Agent-Automated-Anomaly-Detection-Microservice)
 
-The public Vercel demo runs in **offline diagnostics mode** with external webhook
-delivery disabled. No LLM API key is needed. Use `/docs` to submit the example
+The public Vercel demo runs in **live Gemini diagnostics mode** with external webhook
+delivery disabled. The provider key is stored as a Vercel secret. Use `/docs` to submit the example
 telemetry. Production HTTP checks passed for health, Swagger, normal telemetry,
 anomalous telemetry and invalid input (422); responses are recorded in
 `docs/live-verification.json`. GitHub Actions also passed the Python tests, Docker
-build and container health check. The PDF and original validation record describe
-the earlier local verification stage. Cloud Run deployment was attempted but
+build and container health check. A credentialed Gemini request returned
+`source: "llm"`, a structured diagnosis and no fallback; see
+`docs/gemini-verification.json`. Local runs still default to offline mode.
+Cloud Run deployment was attempted but
 blocked by disabled Google Cloud billing; Vercel is the active deployment.
 
 ## Quick start

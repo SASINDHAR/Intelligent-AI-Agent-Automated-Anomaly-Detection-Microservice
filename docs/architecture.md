@@ -60,4 +60,5 @@ dead-letter handling. Use stable caller event IDs and durable uniqueness constra
 to deduplicate replays. Add object-store model versioning and a real calibration set.
 
 No causal diagnosis, long-term storage, drift monitoring, safety certification,
-real industrial calibration or production deployment is asserted.
+real industrial calibration or production industrial use is asserted. The evaluation
+demo is deployed on Vercel and verified with a live Gemini diagnostic request.

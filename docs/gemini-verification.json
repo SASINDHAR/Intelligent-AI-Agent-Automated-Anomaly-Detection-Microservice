@@ -1,0 +1,20 @@
+{
+  "url": "https://hopn-anomaly.vercel.app",
+  "deployment_id": "dpl_99iSYH24YF4zXvokhTk7h4ybzDuS",
+  "verification_date": "2026-11-16",
+  "health": {"status": "ok", "model_loaded": true, "llm_mode": "live"},
+  "request_fixture": "examples/anomaly.json",
+  "workflow_status": "disabled",
+  "diagnosis": {
+    "summary": "Asset motor-01 shows extreme anomalies at 10:00:01Z. Temperature reached 110.0 C (9.0 sigma deviation), vibration spiked to 12.0 mm/s (28.57 sigma deviation), and current rose to 22.0 A (12.0 sigma deviation). These severe multi-parameter deviations indicate urgent operational stress requiring human inspection.",
+    "probable_causes": [
+      "Severe mechanical binding or bearing degradation",
+      "Excessive physical load causing high current and thermal buildup",
+      "Cooling system failure compounding thermal rise"
+    ],
+    "recommended_action": "inspect_bearings",
+    "source": "llm",
+    "fallback_reason": null,
+    "requires_human_review": true
+  }
+}
