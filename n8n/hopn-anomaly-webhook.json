@@ -1,0 +1,107 @@
+{
+  "name": "HOPn Anomaly Event Receiver",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hopn-anomaly",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "c812e5a4-6911-46e7-99f1-0a63896a715a",
+      "name": "Receive anomaly event",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [260, 300],
+      "webhookId": "c70e4421-6f58-4ca1-af0a-bcb6c99e17ec"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "79f6834a-b843-479b-a53f-859caaecf83a",
+              "leftValue": "={{ $json.body.event_type }}",
+              "rightValue": "anomaly.detected",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "761916a8-079a-42c3-8b28-03be49f6d275",
+      "name": "Is anomaly event?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6dffec16-13af-43cc-8aad-568c5f6c853f",
+              "name": "event_id",
+              "value": "={{ $json.body.event.event_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d578cb0d-6146-436e-8e2c-7e2ec78fa240",
+              "name": "asset_id",
+              "value": "={{ $json.body.event.telemetry.asset_id }}",
+              "type": "string"
+            },
+            {
+              "id": "fbd6be57-e626-47a2-9e38-a0eaf6b88d85",
+              "name": "recommended_action",
+              "value": "={{ $json.body.event.diagnosis.recommended_action }}",
+              "type": "string"
+            },
+            {
+              "id": "cfbc2ec6-15a1-4296-b80a-4fa0026c043a",
+              "name": "requires_human_review",
+              "value": "={{ $json.body.event.diagnosis.requires_human_review }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "49f54b31-21f7-4a9f-9c0e-af598bce41c8",
+      "name": "Prepare anomaly event",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [740, 200]
+    }
+  ],
+  "connections": {
+    "Receive anomaly event": {
+      "main": [[{ "node": "Is anomaly event?", "type": "main", "index": 0 }]]
+    },
+    "Is anomaly event?": {
+      "main": [
+        [{ "node": "Prepare anomaly event", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1a03c97d-57d8-4edc-9bb2-12b12a984daa",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

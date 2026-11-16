@@ -110,6 +110,13 @@ node on `body.event.diagnosis.recommended_action` and route to your maintenance
 review process. Use HTTPS outside local development. Inside Docker, `localhost`
 is the API container; on Docker Desktop use `host.docker.internal` for a host receiver.
 
+An importable starter workflow is provided at [`n8n/hopn-anomaly-webhook.json`](n8n/hopn-anomaly-webhook.json).
+In n8n, use **Workflows → Import from File**, import this JSON, save it, and
+activate it. Copy the **Production URL** from its Webhook node; do not use the
+Test URL for the deployed service. Set that URL as Vercel's `WORKFLOW_WEBHOOK_URL`
+for Production (and Preview if wanted), then redeploy. The endpoint returns
+`workflow_status: "delivered"` after n8n accepts an anomaly event with HTTP 2xx.
+
 Only anomalies trigger a POST. The payload is:
 
 ```json
