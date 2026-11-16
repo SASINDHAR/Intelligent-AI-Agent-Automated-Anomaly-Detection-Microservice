@@ -1,0 +1,61 @@
+{
+  "anomaly": {
+    "event_id": "54831a2f-e1b9-41ff-93ec-68e0b9d4627f",
+    "telemetry": {
+      "asset_id": "motor-01",
+      "timestamp": "2026-11-16T10:00:01Z",
+      "temperature_c": 110.0,
+      "vibration_mm_s": 12.0,
+      "current_a": 22.0
+    },
+    "detection": {
+      "is_anomaly": true,
+      "decision_margin": -0.1645083053701576,
+      "model_version": "iforest-synthetic-v1-seed42",
+      "deviations_sigma": {
+        "temperature_c": 9.0,
+        "vibration_mm_s": 28.571428571428573,
+        "current_a": 12.0
+      }
+    },
+    "diagnosis": {
+      "summary": "Anomalous steady-state observation: vibration_mm_s is +28.6 baseline standard deviations. Inspection required; cause is unconfirmed.",
+      "probable_causes": [
+        "Possible bearing wear or mechanical imbalance"
+      ],
+      "recommended_action": "inspect_bearings",
+      "source": "offline",
+      "fallback_reason": null,
+      "requires_human_review": true
+    },
+    "workflow_status": "disabled"
+  },
+  "url": "https://hopn-anomaly.vercel.app",
+  "normal": {
+    "event_id": "694489e0-7742-4b6c-a251-154aaf62d141",
+    "telemetry": {
+      "asset_id": "motor-01",
+      "timestamp": "2026-11-16T10:00:00Z",
+      "temperature_c": 65.0,
+      "vibration_mm_s": 2.0,
+      "current_a": 10.0
+    },
+    "detection": {
+      "is_anomaly": false,
+      "decision_margin": 0.2161784572437958,
+      "model_version": "iforest-synthetic-v1-seed42",
+      "deviations_sigma": {
+        "temperature_c": 0.0,
+        "vibration_mm_s": 0.0,
+        "current_a": 0.0
+      }
+    },
+    "diagnosis": null,
+    "workflow_status": "not_needed"
+  },
+  "health": {
+    "status": "ok",
+    "model_loaded": true,
+    "llm_mode": "offline"
+  }
+}
